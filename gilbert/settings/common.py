@@ -27,9 +27,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third Apps
+    'bootstrap4',
     'debug_toolbar',
 
     # Locals Apps
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +78,13 @@ DATABASES = {
     }
 }
 
+# "accounts에 있는 User모델을 현재 프로젝트의 User 모델로 사용하겠다" 라는 의미
+# 프로젝트 초반에 시작.
+AUTH_USER_MODEL = "accounts.User"
+#1. AUTH_USER_MODEL = "accounts.User"
+#2. accounts App에 User 클래스 구현
+#3. admin.py에 UserAdmin 구현 후 superuser생성
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -116,7 +125,7 @@ USE_TZ = True
 
 #=========================== 기본 추가 사항 ===========================#
 STATIC_URL = '/static/'
-STATIC_DIR = [
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'gilbert', 'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
