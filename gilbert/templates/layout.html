@@ -24,7 +24,7 @@
         {% endfor %}
     {% endif %}
 
-    <div class="border-bottom mb-3">
+    <div class="border-top mt-3">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
@@ -36,7 +36,13 @@
                         <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
                             <a class="me-3 py-2 text-dark text-decoration-none" href="#">사람찾기 </a>
                             <a class="me-3 py-2 text-dark text-decoration-none" href="#">활동 피드 </a>
-                            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Profile </a>
+                            <a class="p-2 text-dark" href="{% url 'profile_edit' %}">
+                                {% if user.avatar %}
+                                    <img src="{{ user.avatar.url }}"/>
+                                {% else %}
+                                    <img src="{% url 'pydenticon_image' user.username %}" class="rounded-circle" style="width: 24px; height: 24px;" />
+                                {% endif %}
+                            </a>
                         </nav>
                     </div>
                 </div>
