@@ -26,3 +26,8 @@ class User(AbstractUser):
     # _form.html에서 <form>multipart/form-data 꼭 확인
     # 장고의 image_kit library                      
     avatar = models.ImageField(blank=True, upload_to="accounts/profile/%Y/%m/%d")
+
+"""
+GenderType = models.TextChoices('Male','Female')
+gender = models.charfield(blank=True, choices=GenderType.choices, max_length=1)
+"""
