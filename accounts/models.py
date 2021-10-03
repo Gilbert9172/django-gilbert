@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
+from django.shortcuts import resolve_url
 # =============== User Model(Profile구현) =============== #
 """
 User 쿼리할 때
@@ -26,7 +27,17 @@ class User(AbstractUser):
     # _form.html에서 <form>multipart/form-data 꼭 확인
     # 장고의 image_kit library                      
     avatar = models.ImageField(blank=True, upload_to="accounts/profile/%Y/%m/%d")
+    
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
 
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url
+        else:
+            return resolve_url("pydenticon_image", self.username)
 """
 GenderType = models.TextChoices('Male','Female')
 gender = models.charfield(blank=True, choices=GenderType.choices, max_length=1)

@@ -1,7 +1,8 @@
 from django.db import models
 # from accounts.models import User / 이렇게 해도 동작은 한다.
-from django.conf import settings
+from django.conf import settings    # 그러나 settings 추천
 from django.db.models.deletion import CASCADE
+from django.urls import reverse
 import re
 
 # Create your models here.
@@ -15,10 +16,10 @@ class Post(models.Model):
     def __str__(self):
         return self.caption
 
-    # detailview구현 필요
-    # def get_absolute_url(self):
-    #     return reverse("model_detail", kwargs={"pk": self.pk})
-    
+    # detailview구현하면 추천
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
+        # return reverse("model_detail", args=[slef.pk])
 
     #======================== tag extract ==========================#
     def extract_tag_list(self):

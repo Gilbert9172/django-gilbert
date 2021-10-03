@@ -37,10 +37,7 @@
                             <a class="me-3 py-2 text-dark text-decoration-none" href="#">사람찾기 </a>
                             <a class="me-3 py-2 text-dark text-decoration-none" href="#">활동 피드 </a>
                             <a class="p-2 text-dark" href="{% url 'profile_edit' %}">
-                                {% if user.avatar %}
-                                    <img src="{{ user.avatar.url }}"/>
-                                {% endif %}
-                                {{user}}프로필 수정
+                                <img src="{{ user.avatar_url }}" class="rounded-circle" style="width:24px; height: 24px;" />
                             </a>
                         </nav>
                     </div>
