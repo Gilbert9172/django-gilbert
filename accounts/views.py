@@ -1,6 +1,5 @@
-from re import template
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PasswordChangeForm, SignupForm
 from django.contrib.auth import login as auth_login
 
@@ -74,3 +73,36 @@ class PasswordChangeView(LoginRequiredMixin, AuthPasswordChangeView):
         return super().form_valid(form)
 
 password_change = PasswordChangeView.as_view()
+
+
+#〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓 user_follow/unfollow 〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
+from . models import User
+
+@login_required
+def user_follow(request, username):
+    # accounts app안에 있으니깐 User사용 / get_user_model이랑 같음
+    follow_user = get_object_or_404(User,username=username)
+
+    # 내가 "A"를 팔로우하면, following_set에 "A"를 추가
+    request.user.following_set.add(follow_user)
+
+    # "A"입장에서는 자신을 팔로우 하는 사람들 follower_set에 나를 추가
+    follow_user.follower_set.add(request.user)
+
+    messages.success(request, f'{follow_user}님을 팔로우 했습니다.')
+
+    # HTTP_REFERER : 헤더가 없는경우
+    redirect_url = request.META.get('HTTP_REFERER','root')
+    return redirect(redirect_url)
+
+@login_required
+def user_unfollow(request, username):
+    unfollow_user = get_object_or_404(User,username=username)
+
+    request.user.following_set.remove(unfollow_user)
+
+    unfollow_user.follower_set.remove(request.user)
+
+    messages.success(request, f'{unfollow_user}님을 팔로우 취소했습니다.')
+    redirect_url = request.META.get('HTTP_REFERER','root')
+    return redirect(redirect_url)

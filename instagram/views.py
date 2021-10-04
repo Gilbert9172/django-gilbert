@@ -5,6 +5,22 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PostForm
 # from .models import extract_tag_list
 
+#〓〓〓〓〓〓〓〓〓〓〓〓〓〓 index 구현 〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
+@login_required
+def index(request):
+    suggested_user_list = get_user_model().objects.all()\
+        .exclude(pk=request.user.pk)\
+        .exclude(pk__in=request.user.following_set.all())
+    
+    return render(request,"instagram/index.html",{
+        "suggested_user_list":suggested_user_list
+    })
+
+# exclude(pk=request.user.pk) : 나 자신을 제외
+# exclude(pk__in=request.user.following_set.all()) : following_set에
+# 있는 모든 user를 제외
+
+
 #〓〓〓〓〓〓〓〓〓〓〓〓〓〓 post new 구현 〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
 @login_required
 def post_new(request):
