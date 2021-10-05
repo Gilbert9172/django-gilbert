@@ -4,22 +4,45 @@ from django.conf import settings    # 그러나 settings 추천
 from django.db.models.deletion import CASCADE
 from django.urls import reverse
 import re
-
 # Create your models here.
+
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+# user
+# → Post.objects.filter(author=name)
+# → user.post_set.all() : default
 class Post(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    author = models.ForeignKey(
+                                settings.AUTH_USER_MODEL,
+                                related_name="my_post_set",
+                                on_delete=CASCADE
+                                )
     photo = models.ImageField(upload_to="instagram/post/%Y/%m/%d")
     caption = models.TextField()
     tag_set = models.ManyToManyField('Tag', blank=True)
     location = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    like_user_set = models.ManyToManyField(
+                                            settings.AUTH_USER_MODEL,
+                                            related_name="like_post_set",
+                                            blank=True
+                                            )
 
     def __str__(self):
         return self.caption
 
+    #=====================  get_absolute_url =======================#
     # detailview구현하면 추천
     def get_absolute_url(self):
-        return reverse("model_detail", kwargs={"pk": self.pk})
-        # return reverse("model_detail", args=[slef.pk])
+        # return reverse("model_detail", kwargs={"pk": self.pk})
+        return reverse("instagram:post_detail", args=[self.pk])
 
     #======================== tag extract ==========================#
     def extract_tag_list(self):
@@ -30,7 +53,13 @@ class Post(models.Model):
             tag_list.append(tag)
         return tag_list
 
+    # 인자로 받은 user가 실제로 post를 좋아하는가
+    def is_like_user(self,user):
+        return self.like_user_set.filter(pk=user.pk).exists()
 
+    # post 순서 지정
+    class Meta:
+        ordering = ['-id']
 
 #django-taggit's 라는 라이브러리도 있음
 class Tag(models.Model):
@@ -38,3 +67,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+# class LikeUser(models.Model):
+#     post = models.ForeignKey(Post, on_delete=CASCADE)
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)

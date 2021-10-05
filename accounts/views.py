@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PasswordChangeForm, SignupForm
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.views import LoginView
 
 #================= signup views 구현 ===================#
 def signup(request):
@@ -21,7 +22,6 @@ def signup(request):
 
 
 #============================ login 구현 ===========================#
-from django.contrib.auth.views import LoginView
 
 login = LoginView.as_view(template_name="accounts/login_form.html")
 
