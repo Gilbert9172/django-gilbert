@@ -61,6 +61,16 @@ class Post(models.Model):
     class Meta:
         ordering = ['-id']
 
+#〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓 comment 모델 〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
+class Comment(BaseModel):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    message = models.TextField()
+
+    class Meta:
+        ordering = ['-id']
+
+#〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓 Tag 모델 〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
 #django-taggit's 라는 라이브러리도 있음
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, blank=True)

@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import PostForm
+from .forms import PostForm,CommentForm
 # from .models import extract_tag_list
 from django.db.models import Q
 from .models import Post
@@ -108,3 +108,21 @@ def user_page(request,username):
         }
     return render(request, "instagram/user_page.html", context)
 
+#〓〓〓〓〓〓〓〓〓〓〓〓〓〓 comment_new 〓〓〓〓〓〓〓〓〓〓〓〓〓〓#
+@login_required
+def comment_new(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if request.method =="POST":
+        form = CommentForm(request.POST, request.FILES)
+        if form.is_valid:
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            # messages.success(request,"댓글을 달았습니다")
+            return redirect(comment.post)
+    else:
+        form = CommentForm()
+    return render(request, "instagram/comment_form.html", {
+        'form':form
+    })
